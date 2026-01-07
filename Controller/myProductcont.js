@@ -1,5 +1,5 @@
 import productmodel from "../models/productmodel.js";
-import cloudinary from "../Config/Cloud.js";
+import cloudinary from "../config/Cloud.js";
 import fs from "fs";
 import mongoose from "mongoose";
 
