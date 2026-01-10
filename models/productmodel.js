@@ -4,59 +4,57 @@ const productSchema = new mongoose.Schema(
   {
     shoeName: {
       type: String,
-      required: [true, "Shoe name is required"],
+      required: true,
       trim: true,
     },
 
     desc: {
       type: String,
-      required: [true, "Description is required"],
+      required: true,
       trim: true,
     },
 
-    images: [
-      {
-        type: Array,
-        required: true,
-      },
-    ],
+    images: {
+      type: [String], // ✅ FIXED
+      required: true,
+    },
 
     category: {
       type: String,
-      required: [true, "Category is required"],
+      required: true,
       trim: true,
       lowercase: true,
     },
 
-    shoeNumbers: [
-      {
-        type: Array,
-        required: true,
-      },
-    ],
-    brand:{
-      type:String,
-      
+    shoeNumbers: {
+      type: [Number], // ✅ FIXED
+      required: true,
     },
-    color:{
-      type:Array,
 
+    brand: {
+      type: String,
+      trim: true,
     },
+
+    color: {
+      type: [String], // ✅ FIXED
+    },
+
     isAvailable: {
       type: Boolean,
-      default: true, // 👈 available by default
+      default: true,
     },
+
     price: {
       type: Number,
-      required:true
+      required: true,
     },
+
     discountPrice: {
-      type:Number
-    }
+      type: Number,
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 export default mongoose.model("Product", productSchema);

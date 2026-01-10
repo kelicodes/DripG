@@ -22,7 +22,7 @@ productRouter.post(
 productRouter.get("/fetch", fetchProduct);
 
 // Fetch all products
-productRouter.get("/fetch", fetchProducts);
+productRouter.get("/fetchall", fetchProducts);
 
 // Delete a product
 productRouter.delete("/remove", removeProduct);
