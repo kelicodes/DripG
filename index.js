@@ -15,7 +15,7 @@ const port = process.env.PORT || 5000;
 console.log("🔥 Server starting...");
 
 // ---------- CORS Setup ----------
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://dripg.onrender.com","https://dripjunk.vercel.app/"]; // your React dev server
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://dripg.onrender.com","https://dripjunk.vercel.app"]; // your React dev server
 
 app.use(
   cors({
