@@ -69,7 +69,7 @@ export const login = async (req, res) => {
     }
 
     // 2️⃣ Find user + include password
-    const user = await User.findOne({ email }).select("-password");
+    const user = await User.findOne({ email }).select("+password");
 
     // 3️⃣ Check user exists
     if (!user) {
