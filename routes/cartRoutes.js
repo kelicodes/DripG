@@ -7,7 +7,7 @@ const cartRouter=express.Router()
 
 cartRouter.post("/addtocart",Auth,addtocart)
 cartRouter.post("/removefromcart",Auth,removefromcart)
-cartRouter.post("/mycart",Auth,getmyCart)
+cartRouter.get("/mycart",Auth,getmyCart)
 
 
 export default cartRouter
