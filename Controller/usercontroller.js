@@ -2,50 +2,58 @@ import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-
-/// 🔑 Generate JWT
-const generateToken = (res, userId) => {
-  const token = jwt.sign({ id: userId }, process.env.SECRETKEY, {
-    expiresIn: "7d",
-  });
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+/* =========================
+   🔑 GENERATE JWT
+========================= */
+const generateToken = (userId) => {
+  return jwt.sign(
+    { id: userId },
+    process.env.SECRETKEY,
+    { expiresIn: "7d" }
+  );
 };
 
-/// 📝 SIGNUP
+/* =========================
+   📝 SIGNUP
+========================= */
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     // Validation
     if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
+    // Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
-
-     const salt = await bcrypt.genSalt(10);
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const user = await User.create({
       name,
       email,
-      password:hashedPassword
+      password: hashedPassword,
     });
 
-    generateToken(res, user._id);
+    // Create token
+    const token = generateToken(user._id);
 
     res.status(201).json({
       success: true,
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -53,41 +61,53 @@ export const signup = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-    console.log(error)
+    console.error("Signup error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-/// 🔐 LOGIN
+/* =========================
+   🔐 LOGIN
+========================= */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1️⃣ Validate input
+    // Validation
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+      return res.status(400).json({
+        success: false,
+        message: "Email and password required",
+      });
     }
 
-    // 2️⃣ Find user + include password
+    // Find user
     const user = await User.findOne({ email }).select("+password");
-
-    // 3️⃣ Check user exists
     if (!user) {
-      return res.status(401).json({ message: "Invalid email adress" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email",
+      });
     }
 
-    // 4️⃣ Compare password
+    // Compare password
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
     if (!isPasswordCorrect) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password",
+      });
     }
 
+    // Create token
+    const token = generateToken(user._id);
 
-    generateToken(res, user._id);
-
-    res.json({
+    res.status(200).json({
       success: true,
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -95,35 +115,48 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-/// 🚪 LOGOUT
-export const logout = async (req, res) => {
-  try {
-    res.cookie("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
+    console.error("Login error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
-
-    res.json({ success: true, message: "Logged out successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 };
+
+/* =========================
+   👤 GET LOGGED-IN USER
+========================= */
 export const me = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const user = await User.findById(userId).select("-password"); // exclude password
+    const user = await User.findById(userId).select("-password");
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    res.status(200).json({ success: true, user });
+    res.status(200).json({
+      success: true,
+      user,
+    });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Me error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
+};
+
+/* =========================
+   🚪 LOGOUT (FRONTEND HANDLES TOKEN)
+========================= */
+export const logout = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
 };

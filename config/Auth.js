@@ -2,24 +2,24 @@ import jwt from "jsonwebtoken";
 
 const Auth = (req, res, next) => {
   try {
-    const token = req.cookies.token; // ✅ get token from cookies
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
-        message: "Login required"
+        message: "Login required",
       });
     }
 
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.SECRETKEY);
 
-    req.user = { id: decoded.id }; // ✅ store user ID in request
-    next(); // continue to the next middleware/controller
+    req.user = { id: decoded.id };
+    next();
   } catch (error) {
-    console.error("Auth middleware error:", error);
-    return res.status(401).json({ // ❌ use 401 for auth issues
+    return res.status(401).json({
       success: false,
-      message: "Invalid or expired token. Please log in again."
+      message: "Invalid or expired token",
     });
   }
 };
