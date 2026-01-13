@@ -1,6 +1,6 @@
 import express from "express";
 import upload from "../middleware/multer.js";// Cloudinary middleware
-import {productUpload, fetchProduct,fetchProducts,fetchProductsByCategory,removeProduct } from "../Controller/myProductcont.js"
+import {productUpload, fetchProduct,fetchProducts,fetchProductsByCategory,removeProduct,fetchCartProduct} from "../Controller/myProductcont.js"
 
 const productRouter = express.Router();
 
@@ -20,6 +20,8 @@ productRouter.post(
 
 // Fetch a single product
 productRouter.get("/fetch", fetchProduct);
+
+productRouter.get("/cartpro", fetchCartProduct)
 
 // Fetch all products
 productRouter.get("/fetchall", fetchProducts);
