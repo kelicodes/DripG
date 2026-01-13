@@ -148,7 +148,7 @@ export const fetchCartProduct = async (req, res) => {
       });
     }
 
-    const product = await productmodel.findById(productId);
+    const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({
