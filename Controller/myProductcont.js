@@ -136,6 +136,43 @@ export const fetchProduct = async (req, res) => {
   }
 };
 
+
+export const fetchCartProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID format",
+      });
+    }
+
+    const product = await productmodel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Product fetched",
+      product,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Fetch product failed",
+    });
+  }
+};
+
+
+
 // ======= Remove product =======
 export const removeProduct = async (req, res) => {
   try {
