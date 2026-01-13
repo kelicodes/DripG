@@ -21,7 +21,7 @@ productRouter.post(
 // Fetch a single product
 productRouter.get("/fetch", fetchProduct);
 
-productRouter.get("/cartpro", fetchCartProduct);
+productRouter.get("/cartpro/:productId", fetchCartProduct);
 
 // Fetch all products
 productRouter.get("/fetchall", fetchProducts);
