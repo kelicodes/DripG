@@ -4,7 +4,7 @@ import {
   getMyOrders,
   getAllOrders,
   updateOrderStatus
-} from "../controllers/orderController.js";
+} from "../Controller/orderController.js"
 import Auth from "../middleware/Auth.js";
 
 const orderRouter = express.Router();
@@ -16,4 +16,4 @@ orderRouter.get("/my-orders", Auth, getMyOrders);
 orderRouter.get("/all", Auth, getAllOrders);
 orderRouter.put("/:orderId/status", Auth, updateOrderStatus);
 
-export default router;
+export default orderRouter;
