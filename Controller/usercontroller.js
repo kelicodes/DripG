@@ -123,11 +123,19 @@ export const login = async (req, res) => {
   }
 };
 
-/* =========================
-   👤 GET LOGGED-IN USER
-========================= */
+/* =========================*/
+  
+
 export const me = async (req, res) => {
   try {
+    // Safety check
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: user not found",
+      });
+    }
+
     const userId = req.user.id;
 
     const user = await User.findById(userId).select("-password");
