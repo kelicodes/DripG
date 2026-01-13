@@ -5,7 +5,7 @@ import {
   getAllOrders,
   updateOrderStatus
 } from "../Controller/orderController.js"
-import Auth from "../middleware/Auth.js";
+import Auth from "../config/Auth.js";
 
 const orderRouter = express.Router();
 
