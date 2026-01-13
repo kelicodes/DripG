@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import cartRouter from "./routes/cartRoutes.js";
+import orderRouter from "./routes/orderRoutes.js";
+
 
 dotenv.config();
 
@@ -41,6 +43,7 @@ DB(); // connect to database
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/cart",cartRouter)
+app.use("/order",orderRouter)
 
 
 // ---------- Test Route ----------
